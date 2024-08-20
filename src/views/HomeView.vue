@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import {
+  PopoverArrow,
+  PopoverClose,
+  PopoverContent,
+  PopoverPortal,
+  PopoverRoot,
+  PopoverTrigger
+} from 'radix-vue'
 import ButtonInbox from '@/components/ButtonInbox.vue'
 import ButtonTask from '@/components/ButtonTask.vue'
 import IconZap from '@/components/icons/IconZap.vue'
@@ -7,6 +15,7 @@ import { ref } from 'vue'
 type ActiveMenu = 'task' | 'inbox' | null
 
 const isOpenQuickAction = ref(false)
+const openPopover = ref(false)
 const currentActiveMenu = ref<ActiveMenu>(null)
 
 function toggleQuickAction() {
@@ -14,7 +23,14 @@ function toggleQuickAction() {
 }
 
 function setActiveMenu(menu: ActiveMenu) {
+  if (currentActiveMenu.value === menu) {
+    currentActiveMenu.value = null
+    openPopover.value = false
+    isOpenQuickAction.value = false
+    return
+  }
   currentActiveMenu.value = menu
+  openPopover.value = true
 }
 </script>
 
@@ -30,21 +46,45 @@ function setActiveMenu(menu: ActiveMenu) {
       leave-to-class="transform translate-x-4 opacity-0"
     >
       <div class="flex items-center transition" v-show="isOpenQuickAction">
-        <div :class="['mx-2', currentActiveMenu === 'task' ? 'order-last' : '']">
-          <ButtonTask
-            label="Task"
-            :is-open="currentActiveMenu === 'task'"
-            @click="setActiveMenu('task')"
-          />
-        </div>
+        <PopoverRoot :open="openPopover">
+          <PopoverTrigger class="flex items-center transition">
+            <div :class="['mx-2', currentActiveMenu === 'task' ? 'order-last' : '']">
+              <ButtonTask
+                label="Task"
+                :is-open="currentActiveMenu === 'task'"
+                @click="setActiveMenu('task')"
+              />
+            </div>
 
-        <div :class="['mx-2', currentActiveMenu === 'inbox' ? 'order-last' : '']">
-          <ButtonInbox
-            label="Inbox"
-            :is-open="currentActiveMenu === 'inbox'"
-            @click="setActiveMenu('inbox')"
-          />
-        </div>
+            <div :class="['mx-2', currentActiveMenu === 'inbox' ? 'order-last' : '']">
+              <ButtonInbox
+                label="Inbox"
+                :is-open="currentActiveMenu === 'inbox'"
+                @click="setActiveMenu('inbox')"
+              />
+            </div>
+          </PopoverTrigger>
+          <PopoverPortal>
+            <PopoverContent
+              align="end"
+              side="bottom"
+              :side-offset="5"
+              class="px-8 py-6 mb-8 bg-white rounded w-[384px] shadow-sm"
+            >
+              <div class="flex flex-col gap-2.5">
+                <p v-if="currentActiveMenu === 'inbox'">Inbox</p>
+                <p v-if="currentActiveMenu === 'task'">Task</p>
+              </div>
+              <!-- <PopoverClose
+                class="rounded-full h-[25px] w-[25px] inline-flex items-center justify-center text-grass11 absolute top-[5px] right-[5px] hover:bg-green4 focus:shadow-[0_0_0_2px] focus:shadow-green7 outline-none cursor-default"
+                aria-label="Close"
+              >
+                X
+              </PopoverClose>
+              <PopoverArrow class="fill-white" /> -->
+            </PopoverContent>
+          </PopoverPortal>
+        </PopoverRoot>
       </div>
     </Transition>
 
