@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 export default {
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
@@ -25,7 +26,16 @@ export default {
           'purple-accent': '#9B51E0',
 
           green: '#D2F2EA',
-          'green-accent': '#43B78D'
+          'green-accent': '#43B78D',
+
+          red: '#FEEFEE',
+          'red-accent': '#EB5757',
+
+          yellow: '#FFF8E5',
+          'yellow-accent': '#F2C94C',
+
+          blue: '#E9F3FF',
+          'blue-accent': '#2F80ED'
         },
         sticker: {
           100: '#E9F3FF',

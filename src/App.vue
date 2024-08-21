@@ -3,7 +3,7 @@ import MainLayout from './layouts/MainLayout.vue'
 </script>
 
 <template>
-  <MainLayout>
+  <MainLayout class="font-lato">
     <RouterView />
   </MainLayout>
 </template>

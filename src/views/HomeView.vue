@@ -11,6 +11,7 @@ import ButtonInbox from '@/components/ButtonInbox.vue'
 import ButtonTask from '@/components/ButtonTask.vue'
 import IconZap from '@/components/icons/IconZap.vue'
 import { ref } from 'vue'
+import CardInbox from '@/components/CardInbox.vue'
 
 type ActiveMenu = 'task' | 'inbox' | null
 
@@ -35,7 +36,7 @@ function setActiveMenu(menu: ActiveMenu) {
 </script>
 
 <template>
-  <div class="absolute flex items-center right-4 bottom-4">
+  <div class="absolute flex items-center right-4 bottom-4 !font-lato">
     <!-- Transition slide to left -->
     <Transition
       enter-active-class="transition-opacity transition-transform duration-300 ease-out"
@@ -69,19 +70,12 @@ function setActiveMenu(menu: ActiveMenu) {
               align="end"
               side="bottom"
               :side-offset="5"
-              class="px-8 py-6 mb-8 bg-white rounded w-[384px] shadow-sm"
+              class="mb-8 bg-white rounded w-[512px] max-w-[512px] h-[512px] shadow-sm"
             >
-              <div class="flex flex-col gap-2.5">
-                <p v-if="currentActiveMenu === 'inbox'">Inbox</p>
+              <div class="flex flex-col h-full">
+                <CardInbox v-if="currentActiveMenu === 'inbox'" @close="setActiveMenu('inbox')" />
                 <p v-if="currentActiveMenu === 'task'">Task</p>
               </div>
-              <!-- <PopoverClose
-                class="rounded-full h-[25px] w-[25px] inline-flex items-center justify-center text-grass11 absolute top-[5px] right-[5px] hover:bg-green4 focus:shadow-[0_0_0_2px] focus:shadow-green7 outline-none cursor-default"
-                aria-label="Close"
-              >
-                X
-              </PopoverClose>
-              <PopoverArrow class="fill-white" /> -->
             </PopoverContent>
           </PopoverPortal>
         </PopoverRoot>

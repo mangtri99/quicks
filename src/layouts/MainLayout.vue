@@ -2,8 +2,8 @@
 import IconSearch from '@/components/icons/IconSearch.vue'
 </script>
 <template>
-  <div class="flex w-full min-h-screen bg-background font-lato">
-    <aside class="block w-64 p-4 border-r border-white">Aside</aside>
+  <div class="flex w-full min-h-screen bg-background">
+    <aside class="block w-0 p-0 lg:border-r lg:border-white lg:p-4 lg:w-64">Aside</aside>
     <div class="flex flex-col flex-1">
       <header class="w-full">
         <div class="relative">
