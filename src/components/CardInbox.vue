@@ -5,21 +5,21 @@ import { ref } from 'vue'
 
 defineEmits(['close'])
 
-const chatDetail = ref(false)
+const selectedChatId = ref<number | null>(null)
 
 function showChatDetail(id: number) {
   console.log('show chat detail', id)
-  chatDetail.value = true
+  selectedChatId.value = id
 }
 
 function hideChatDetail() {
-  chatDetail.value = false
+  selectedChatId.value = null
 }
 </script>
 
 <template>
   <div class="flex flex-col h-full">
-    <ChatList v-if="!chatDetail" @click="showChatDetail" />
-    <ChatDetail v-else @back="hideChatDetail" @close="$emit('close')" />
+    <ChatList v-if="!selectedChatId" @click="showChatDetail" />
+    <ChatDetail v-else @back="hideChatDetail" @close="$emit('close')" :chat-id="selectedChatId" />
   </div>
 </template>
