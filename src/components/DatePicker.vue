@@ -22,14 +22,15 @@ import {
 } from 'radix-vue'
 import IconCalendar from './icons/IconCalendar.vue'
 
-const model = defineModel('')
+defineProps(['modelValue', 'val'])
+defineEmits(['update:modelValue'])
 </script>
 
 <template>
   <DatePickerRoot
-    v-model:model-value="model"
+    :model-value="modelValue"
+    @update:model-value="($event) => $emit('update:modelValue', $event)"
     id="date-field"
-    :is-date-unavailable="(date: any) => date.day === 19"
   >
     <DatePickerField
       v-slot="{ segments }"

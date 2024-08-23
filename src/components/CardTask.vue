@@ -8,30 +8,12 @@ import {
   DropdownMenuTrigger
 } from 'radix-vue'
 import ButtonPrimary from './ButtonPrimary.vue'
-import { ref } from 'vue'
 import IconChevronDown from './icons/IconChevronDown.vue'
 import TaskList from './tasks/TaskList.vue'
+import { useTaskStore } from '@/stores/taskStore'
+import { format } from 'date-fns'
 
-const accordionItems = ref([
-  {
-    value: 1,
-    title: 'Is it accessible?',
-    content: 'Yes. It adheres to the WAI-ARIA design pattern.',
-    completed: false
-  },
-  {
-    value: 2,
-    title: 'Is it unstyled?',
-    content: "Yes. It's unstyled by default, giving you freedom over the look and feel.",
-    completed: false
-  },
-  {
-    value: 3,
-    title: 'Can it be animated?',
-    content: 'Yes! You can use the transition prop to configure the animation.',
-    completed: false
-  }
-])
+const taskStore = useTaskStore()
 </script>
 
 <template>
@@ -75,11 +57,22 @@ const accordionItems = ref([
       </div>
 
       <div>
-        <ButtonPrimary> Add Task </ButtonPrimary>
+        <ButtonPrimary
+          @click="
+            taskStore.addTask({
+              date: format(new Date(), 'yyyy-MM-dd'),
+              title: '',
+              description: '',
+              isCompleted: false
+            })
+          "
+        >
+          Add Task
+        </ButtonPrimary>
       </div>
     </div>
     <div class="flex-1 w-full h-full overflow-auto">
-      <TaskList :items="accordionItems" />
+      <TaskList />
     </div>
   </div>
 </template>
