@@ -35,7 +35,7 @@ const getChatDetailsById = computed(() => {
 
 const countParticipant = computed(() => {
   // group by userId
-  const groupByUserId = getChatDetailsById.value?.converations.reduce((acc, chat) => {
+  const groupByUserId = getChatDetailsById.value?.converations.reduce((acc: any, chat) => {
     if (!acc[chat.userId]) {
       acc[chat.userId] = 0
     }
@@ -46,7 +46,7 @@ const countParticipant = computed(() => {
 })
 
 const groupByDate = computed(() => {
-  return getChatDetailsById.value?.converations.reduce((acc, conversation) => {
+  return getChatDetailsById.value?.converations.reduce((acc: any, conversation) => {
     const date = conversation.date.split('T')[0] // Extract the date part (YYYY-MM-DD)
 
     if (!acc[date]) {
