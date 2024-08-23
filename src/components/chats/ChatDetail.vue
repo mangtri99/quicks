@@ -5,6 +5,7 @@ import IconX from '../icons/IconX.vue'
 import { computed, onMounted, ref } from 'vue'
 import ChatBubble from './ChatBubble.vue'
 import { format } from 'date-fns'
+import { useScroll } from '@vueuse/core'
 
 interface Props {
   chatId: number
@@ -15,12 +16,13 @@ const { chatId } = defineProps<Props>()
 defineEmits(['close', 'back'])
 
 const chatStore = useChatStore()
-const message = ref('')
+
+const chatContent = ref<HTMLElement | null>(null)
+const { y } = useScroll(chatContent)
 
 onMounted(() => {
   // scroll to bottom
-  const chatContainer = document.querySelector('#chats-content')
-  chatContainer?.scrollTo(0, chatContainer.scrollHeight)
+  y.value = chatContent.value?.scrollHeight || 0
 })
 
 const getChatById = computed(() => {
@@ -58,11 +60,12 @@ const groupByDate = computed(() => {
 })
 
 function sendChat(chatId: number) {
-  chatStore.sendChat(chatId, message.value)
-  message.value = ''
+  chatStore.sendChat(chatId, chatStore.message)
+  chatStore.message = ''
   // scroll to bottom
-  const chatContainer = document.querySelector('#chats-content')
-  chatContainer?.scrollTo(0, chatContainer.scrollHeight)
+  setTimeout(() => {
+    y.value = chatContent.value?.scrollHeight || 0
+  }, 100)
 }
 </script>
 
@@ -91,7 +94,7 @@ function sendChat(chatId: number) {
 
     <hr />
 
-    <div class="flex-1 w-full h-full px-4 py-2 overflow-auto" id="chats-content">
+    <div class="flex-1 w-full h-full px-4 py-2 overflow-auto" ref="chatContent">
       <template v-for="group in groupByDate" :key="group">
         <div class="relative w-full my-3 border-b border-primary-300">
           <p
@@ -103,6 +106,8 @@ function sendChat(chatId: number) {
         </div>
         <template v-for="(chat, index) in group" :key="index">
           <ChatBubble
+            :id="chat.id"
+            :chat-id="chatId"
             :bg-class="chat.bgClass"
             :is-me="chat.isMe"
             :message="chat.message"
@@ -115,12 +120,19 @@ function sendChat(chatId: number) {
 
     <div class="px-4 py-2">
       <form @submit.prevent="sendChat(chatId)">
+        <div
+          class="flex items-center justify-between px-2 py-1 text-xs bg-sticker-400"
+          v-if="chatStore.selectedChat"
+        >
+          <p>Edit Chat</p>
+          <button type="button" @click="chatStore.clearSelectedChat">X</button>
+        </div>
         <div class="flex items-center space-x-3">
           <input
             placeholder="Type to text"
             class="w-full px-3 py-1 text-sm border rounded-md border-primary-200 text-primary-300 focus:ring-primary focus:outline-primary"
             type="text"
-            v-model="message"
+            v-model="chatStore.message"
           />
           <button
             type="submit"

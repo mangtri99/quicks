@@ -10,6 +10,8 @@ import IconMoreHorizontal from '../icons/IconMoreHorizontal.vue'
 import { useChatStore } from '@/stores/chatStore'
 
 interface Props {
+  id: number
+  chatId: number
   isMe: boolean
   name: string
   message: string
@@ -17,10 +19,15 @@ interface Props {
   bgClass: string
 }
 
-defineProps<Props>()
+const { id, chatId, isMe, name, message, textClass, bgClass } = defineProps<Props>()
 defineEmits(['click'])
 
 const chatStore = useChatStore()
+
+function edit(msg: string, msgId: number) {
+  chatStore.editChat(chatId, msgId)
+  chatStore.message = msg
+}
 </script>
 <template>
   <div class="flex w-full mb-3">
@@ -50,6 +57,7 @@ const chatStore = useChatStore()
                 <div>
                   <button
                     type="button"
+                    @click="edit(message, id)"
                     class="w-full px-3 py-2 text-xs text-left text-chats-blue-accent hover:bg-chats-blue"
                   >
                     Edit

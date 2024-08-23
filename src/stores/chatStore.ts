@@ -1,7 +1,14 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
+interface SelectedChat {
+  chatId: number
+  messageId: number
+}
+
 export const useChatStore = defineStore('chat', () => {
+  const message = ref('')
+  const selectedChat = ref<SelectedChat>()
   const chats = ref([
     {
       id: 1,
@@ -208,6 +215,12 @@ export const useChatStore = defineStore('chat', () => {
   ])
 
   function sendChat(chatId: number, message: string) {
+    // If mode edit chat
+    if (selectedChat.value) {
+      updateChat()
+      return
+    }
+    // else add new chat
     const getChat = chatDetails.value.find((chat) => chat.chat_id === chatId)
     if (getChat) {
       getChat.converations.push({
@@ -223,14 +236,28 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
-  function editChat(chatId: number, message: string, messageId: number) {
-    const getChat = chatDetails.value.find((chat) => chat.chat_id === chatId)
+  function updateChat() {
+    const getChat = chatDetails.value.find((chat) => chat.chat_id === selectedChat.value?.chatId)
     if (getChat) {
-      const getMessage = getChat.converations.find((chat) => chat.id === messageId)
+      const getMessage = getChat.converations.findIndex(
+        (chat) => chat.id === selectedChat.value?.messageId
+      )
       if (getMessage) {
-        getMessage.message = message
+        getChat.converations[getMessage].message = message.value
       }
     }
+  }
+
+  function editChat(chatId: number, messageId: number) {
+    selectedChat.value = {
+      chatId,
+      messageId
+    }
+  }
+
+  function clearSelectedChat() {
+    selectedChat.value = undefined
+    message.value = ''
   }
 
   function deleteChat(chatId: number, messageId: number) {
@@ -243,5 +270,15 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
-  return { chats, chatDetails, sendChat, editChat, deleteChat }
+  return {
+    message,
+    selectedChat,
+    chats,
+    chatDetails,
+    sendChat,
+    editChat,
+    deleteChat,
+    updateChat,
+    clearSelectedChat
+  }
 })
