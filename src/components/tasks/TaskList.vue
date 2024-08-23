@@ -12,18 +12,17 @@ import {
   PopoverTrigger
 } from 'radix-vue'
 
-import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 
 import IconChevronDown from '../icons/IconChevronDown.vue'
 import IconMoreHorizontal from '../icons/IconMoreHorizontal.vue'
 import IconSchedule from '../icons/IconSchedule.vue'
 import IconEdit from '../icons/IconEdit.vue'
-import { onMounted, ref } from 'vue'
-import DatePicker from '../DatePicker.vue'
+import { onMounted } from 'vue'
 import { useTaskStore } from '@/stores/taskStore'
 import { differenceInDays, format } from 'date-fns'
-import { CalendarDate, type DateValue } from '@internationalized/date'
+import DatePicker from '../DatePicker.vue'
+import { toDate } from 'radix-vue/date'
 
 const taskStore = useTaskStore()
 
@@ -38,8 +37,6 @@ onMounted(() => {
     this.style.height = this.scrollHeight + 'px'
   })
 })
-
-const date = ref<DateValue>(new CalendarDate(2024, 1, 1))
 
 // function toggleEditDescription() {
 //   isEditDescription.value = !isEditDescription.value
@@ -76,7 +73,7 @@ function editDescription(item: any) {
 </script>
 
 <template>
-  <AccordionRoot class="w-full" type="multiple">
+  <AccordionRoot class="w-full" type="multiple" ref="taskListElement">
     <template v-for="item in taskStore.tasks" :key="item.value">
       <AccordionItem :value="String(item.id)" class="w-full py-[22px] border-b border-primary-300">
         <AccordionHeader class="flex items-center w-full space-x-4 text-sm">
@@ -149,13 +146,15 @@ function editDescription(item: any) {
               class="w-4 h-4"
               :class="[item.date ? 'text-primary' : 'text-primary-300']"
             />
-            <VueDatePicker
-              v-model="item.date"
-              :time-picker="false"
-              :enable-time-picker="false"
-              auto-apply
-              format="dd/MM/yyyy"
-            ></VueDatePicker>
+            <DatePicker
+              :model-value="item.date"
+              @update:model-value="
+                ($event) => {
+                  const createDate = toDate($event)
+                  item.date = format(createDate, 'yyyy-MM-dd')
+                }
+              "
+            />
           </div>
 
           <div class="flex items-center space-x-4">

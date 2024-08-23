@@ -21,17 +21,25 @@ import {
   DatePickerTrigger
 } from 'radix-vue'
 import IconCalendar from './icons/IconCalendar.vue'
+import { ref, watchEffect, type Ref } from 'vue'
+import { parseDate, type DateValue } from '@internationalized/date'
 
-defineProps(['modelValue', 'val'])
-defineEmits(['update:modelValue'])
+const props = defineProps(['modelValue'])
+const emit = defineEmits(['update:modelValue'])
+
+const createDate = (defaultDate: string) => {
+  const date = parseDate(defaultDate)
+  return date
+}
+const dateModel = ref(createDate(props.modelValue as string)) as Ref<DateValue>
+
+watchEffect(() => {
+  emit('update:modelValue', dateModel.value)
+})
 </script>
 
 <template>
-  <DatePickerRoot
-    :model-value="modelValue"
-    @update:model-value="($event) => $emit('update:modelValue', $event)"
-    id="date-field"
-  >
+  <DatePickerRoot v-model="dateModel" id="date-field">
     <DatePickerField
       v-slot="{ segments }"
       class="flex select-none bg-white items-center justify-between rounded-lg text-center text-green10 border border-transparent p-1 w-40 data-[invalid]:border-red-500"
