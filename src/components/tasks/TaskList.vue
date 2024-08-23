@@ -6,11 +6,13 @@ import {
   AccordionRoot,
   AccordionTrigger
 } from 'radix-vue'
+
 import IconChevronDown from '../icons/IconChevronDown.vue'
 import IconMoreHorizontal from '../icons/IconMoreHorizontal.vue'
 import IconSchedule from '../icons/IconSchedule.vue'
 import IconEdit from '../icons/IconEdit.vue'
 import { onMounted, ref } from 'vue'
+import DatePicker from '../DatePicker.vue'
 interface Props {
   items: any[]
 }
@@ -28,6 +30,8 @@ onMounted(() => {
     this.style.height = this.scrollHeight + 'px'
   })
 })
+
+const date = ref('')
 
 const isEditDescription = ref(false)
 
@@ -81,7 +85,8 @@ function toggleEditDescription() {
         <AccordionContent class="mt-2 space-y-4 text-sm text-primary-300">
           <div class="flex items-center space-x-4">
             <IconSchedule class="w-4 h-4" />
-            <div>Date</div>
+
+            <DatePicker v-model="date" />
           </div>
 
           <div class="flex items-center space-x-4">
