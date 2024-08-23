@@ -12,6 +12,7 @@ import ButtonTask from '@/components/ButtonTask.vue'
 import IconZap from '@/components/icons/IconZap.vue'
 import { ref } from 'vue'
 import CardInbox from '@/components/CardInbox.vue'
+import CardTask from '@/components/CardTask.vue'
 
 type ActiveMenu = 'task' | 'inbox' | null
 
@@ -74,7 +75,7 @@ function setActiveMenu(menu: ActiveMenu) {
             >
               <div class="flex flex-col h-full">
                 <CardInbox v-if="currentActiveMenu === 'inbox'" @close="setActiveMenu('inbox')" />
-                <p v-if="currentActiveMenu === 'task'">Task</p>
+                <CardTask v-if="currentActiveMenu === 'task'" />
               </div>
             </PopoverContent>
           </PopoverPortal>

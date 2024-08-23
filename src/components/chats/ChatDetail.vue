@@ -62,6 +62,7 @@ const groupByDate = computed(() => {
 function sendChat(chatId: number) {
   chatStore.sendChat(chatId, chatStore.message)
   chatStore.message = ''
+  chatStore.clearSelectedChat()
   // scroll to bottom
   setTimeout(() => {
     y.value = chatContent.value?.scrollHeight || 0
@@ -82,7 +83,9 @@ function sendChat(chatId: number) {
         <p class="text-sm font-medium text-primary">
           {{ getChatById?.title }}
         </p>
-        <p class="text-xs text-primary-300">{{ countParticipant }} Participant</p>
+        <p v-if="getChatById?.isGroup" class="text-xs text-primary-300">
+          {{ countParticipant }} Participant
+        </p>
       </div>
 
       <div>
@@ -124,8 +127,13 @@ function sendChat(chatId: number) {
           class="flex items-center justify-between px-2 py-1 text-xs bg-sticker-400"
           v-if="chatStore.selectedChat"
         >
-          <p>Edit Chat</p>
-          <button type="button" @click="chatStore.clearSelectedChat">X</button>
+          <div>
+            <p>Edit</p>
+            <p class="truncate text-primary-200">{{ chatStore.selectedChat.message }}</p>
+          </div>
+          <button type="button" @click="chatStore.clearSelectedChat">
+            <IconX class="w-2 h-2 text-primary-300" />
+          </button>
         </div>
         <div class="flex items-center space-x-3">
           <input

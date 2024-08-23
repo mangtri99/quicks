@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 interface SelectedChat {
   chatId: number
   messageId: number
+  message?: string
 }
 
 export const useChatStore = defineStore('chat', () => {
@@ -248,10 +249,11 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
-  function editChat(chatId: number, messageId: number) {
+  function editChat(chatId: number, messageId: number, message: string) {
     selectedChat.value = {
       chatId,
-      messageId
+      messageId,
+      message
     }
   }
 

@@ -25,8 +25,12 @@ defineEmits(['click'])
 const chatStore = useChatStore()
 
 function edit(msg: string, msgId: number) {
-  chatStore.editChat(chatId, msgId)
+  chatStore.editChat(chatId, msgId, msg)
   chatStore.message = msg
+}
+
+function deleteMessage(msgId: number) {
+  chatStore.deleteChat(chatId, msgId)
 }
 </script>
 <template>
@@ -64,6 +68,7 @@ function edit(msg: string, msgId: number) {
                   </button>
                   <hr />
                   <button
+                    @click="deleteMessage(id)"
                     type="button"
                     class="w-full px-3 py-2 text-xs text-left text-chats-red-accent hover:bg-chats-red"
                   >
